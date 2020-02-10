@@ -1,0 +1,24 @@
+{
+  "name": "castle-parser",
+  "version": "0.1.0",
+  "description": "parser and analys for forum.mcgl.ru/fortress/",
+  "main": "Parser",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcgl"
+  ],
+  "author": "exi",
+  "license": "ISC",
+  "dependencies": {
+    "async-exec-cmd": "^2.0.2",
+    "bluebird": "^3.7.2",
+    "cheerio": "^1.0.0-rc.3",
+    "child_process": "^1.0.2",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.8"
+  }
+}
