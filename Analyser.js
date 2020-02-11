@@ -25,6 +25,7 @@ function getFiles (dir, files_){
 };
 
 function app() {
+	var flag = 0;
 	var all_clans = [];
 	var all_players = [];
 	var logs = [];
@@ -88,18 +89,40 @@ function app() {
 				}
 				if (_event.type === CAPTURE_STOP) {
 					if (findPlayer(_event.player, logs[i])) {
-						findPlayerByID(_event.player, logs[i]).capture_time+=(_event.data, 10);
+						findPlayerByID(_event.player, logs[i]).capture_time+=parseInt(_event.data, 10);
 					}
 				}
-				if (_event.type === CAPTURED && _event.text === "Попытка захвата: захватил"){
+				if (_event.text.includes("Попытка захвата: отмена, ")) {
+					if (findPlayer(_event.player, logs[i])) {
+						let data = _event.text.substr(_event.text.lastIndexOf(' ')+1);
+						data = data.substr(0, data.length - 1);
+						findPlayerByID(_event.player, logs[i]).capture_time+=parseInt(_event.data, 10);
+					}
+				}
+				if (_event.type === CAPTURED){
 					if (findPlayer(_event.player, logs[i])) {
 						findPlayerByID(_event.player, logs[i]).capture_time+=60;
-					}	
+					}
+					findClanByID(_event.clan, logs[i]).captured++;
+					flag++;
 				}
 			}
 			else {
-				if (_event.text === "Захват" || _event.text === "Захват (удержание)") {
-					findClanByID(_event.clan, logs[i]).captured++;
+				if (_event.type === CAPTURED){
+					if (findClanByID(_event.clan, logs[i]) === -1) {
+						var _clan = {
+							id: _event.clan,
+							kills: 0,
+							deaths: 0,
+							flag_dmg: 0,
+							capture_time: 0,
+							members: 0,
+							captured: 1
+						};
+						logs[i].clans.push(_clan);
+					}
+					else findClanByID(_event.clan, logs[i]).captured++;
+					flag++;
 				}
 			}
 		}
@@ -175,8 +198,9 @@ function app() {
 	}
 	console.log("PVP: "+pvp);
 	console.log("Время захвата: "+capture_time);
-	all_clans.sort(Flags);
-	PrintClan(all_clans);
+	all_players.sort(Siege);
+	PrintPlayer(all_players);
+	//console.log(flag);
 };
 
 function findPlayer(id, log){
