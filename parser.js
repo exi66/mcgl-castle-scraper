@@ -11,7 +11,7 @@ const url = (args[1].endsWith("\/")) ? args[1] : args[1]+"\/";
 const pages = parseInt(args[2]) || 3;
 const year = args[2] || new Date().getFullYear().toString();
 const path = args[3] || "./result/";
-const scraper_support = "fortressbattlelog-scrapper.js";
+const scraper_support = "fortressbattlelog-scraper.js";
 const localJar = request.jar();
 localJar.setCookie(request.cookie("PHPSESSID="+php), 'http://forum.minecraft-galaxy.ru');
 
