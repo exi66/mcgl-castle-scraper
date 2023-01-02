@@ -36,16 +36,16 @@ request({
 				let _event = {'date':'', 'player':'', 'clan':'', 'text':'text', 'type':'', 'data':''};
 				_event.date = table[i].match('[0-9]{4}([\-/ \.])[0-9]{2}[\-/ \.][0-9]{2}[\ / \.][0-9]{2}[\:/ \.][0-9]{2}[\:/ \.][0-9]{2}')[0];
 				try {
-					_event.player = table[i].match(/\b(href=\'\/profilemain\/)[0-9]+/gm)[0].substring(19);
+					_event.player = table[i].match(/\b(href=\"\/profilemain\/)[0-9]+/gm)[0].substring(19);
 				} catch (e) {
 					_event.player = -1;
 				}
 				try {
-					_event.clan = table[i].match(/\b(href=\'\/claninfo\/)[0-9]+/gm)[0].substring(16);
+					_event.clan = table[i].match(/\b(href=\"\/claninfo\/)[0-9]+/gm)[0].substring(16);
 				} catch (e) {
 					_event.clan = -1;
 				} 
-				let type = table[i].match('<td class=\'text-row\'>(.*?)</td>')[1];
+				let type = table[i].match('<td class=\"text-row\">(.*?)</td>')[1];
 				_event.text = type;
 				if (type.includes('Урон по флагу')) {
 					_event.type = FLAG_DMG;
@@ -55,7 +55,7 @@ request({
 				}
 				else if (type.includes('Игрок убит:')) {
 					_event.type = KILL;
-					_event.data = type.match(/\b(href=\'\/profilemain\/)[0-9]+/gm)[0].substring(19);
+					_event.data = type.match(/\b(href=\"\/profilemain\/)[0-9]+/gm)[0].substring(19);
 				}
 				else if (type.includes('Попытка захвата: начал')) {
 					_event.type = CAPTURE_START;
