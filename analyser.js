@@ -1,14 +1,14 @@
 var fs = require('fs');
 
-const KILL = "KILL";
-const FLAG_DMG = "FLAG_DMG";
-const FLAG_DESTR = "FLAG_DESTR";
-const CAPTURE_START = "CAPTURE_START";
-const CAPTURE_STOP = "CAPTURE_STOP";
-const CAPTURED = "CAPTURED";
+const KILL = 'KILL';
+const FLAG_DMG = 'FLAG_DMG';
+const FLAG_DESTR = 'FLAG_DESTR';
+const CAPTURE_START = 'CAPTURE_START';
+const CAPTURE_STOP = 'CAPTURE_STOP';
+const CAPTURED = 'CAPTURED';
 
 const args = process.argv.slice(2);
-if (!args[0]) return console.error("Ошибка: отсутствуют обязательные аргументы <path>!");
+if (!args[0]) return console.error('Ошибка: отсутствуют обязательные аргументы <path>!');
 const path = args[0];
 app();
 
@@ -34,7 +34,7 @@ function app() {
 				}
 				if (local_event.type === FLAG_DMG) local_player.flag_dmg+=parseInt(local_event.data, 10);
 				if (local_event.type === CAPTURE_STOP) local_player.capture_time+=parseInt(local_event.data, 10);
-				if (local_event.text.includes("Попытка захвата: отмена, ")) {
+				if (local_event.text.includes('Попытка захвата: отмена, ')) {
 					let data = local_event.text.substr(local_event.text.lastIndexOf(' ')+1);
 					data = data.substr(0, data.length - 1);
 					local_player.capture_time+=parseInt(local_event.data, 10);
@@ -92,11 +92,11 @@ function app() {
 		pvp+=clan.kills;
 		capture_time+=clan.capture_time;
 	}
-	console.log("Осад: "			+battlelog_list.length);
-	console.log("Игроков: "			+all_players_list.length);
-	console.log("Кланов: "			+all_clans_list.length);
-	console.log("PVP: "				+pvp);
-	console.log("Время захвата: "	+capture_time);
+	console.log('Осад: '			+battlelog_list.length);
+	console.log('Игроков: '			+all_players_list.length);
+	console.log('Кланов: '			+all_clans_list.length);
+	console.log('PVP: '				+pvp);
+	console.log('Время захвата: '	+capture_time);
 	
 	all_players_list.sort(Siege);
 	printPlayers(all_players_list, 100);
@@ -244,23 +244,23 @@ function AverageMembers(a, b) {
 }
 
 function printClans(data, l) {
-	console.log("[table]");
-	console.log("Клан||Посещено осад||Убийств||Смертей||K/D||Время в захвате||Урон по флагу||Среднее кол-во людей||Захватов/удержаний");
+	console.log('[table]');
+	console.log('Клан||Посещено осад||Убийств||Смертей||K/D||Время в захвате||Урон по флагу||Среднее кол-во людей||Захватов/удержаний');
 	for (let i = 0; i < l; i++){
 		let elem = data[i];
-		let kda = (elem.deaths > 0) ? (elem.kills/elem.deaths).toFixed(2) : elem.kills+".00";
-		console.log("[clan="+elem.id+"]|"+elem.siege+"|"+elem.kills+"|"+elem.deaths+"|"+kda+"|"+elem.capture_time+"|"+elem.flag_dmg+"|"+Math.floor(elem.members/elem.siege)+"|"+elem.captured);
+		let kda = (elem.deaths > 0) ? (elem.kills/elem.deaths).toFixed(2) : elem.kills+'.00';
+		console.log('[clan='+elem.id+']|'+elem.siege+'|'+elem.kills+'|'+elem.deaths+'|'+kda+'|'+elem.capture_time+'|'+elem.flag_dmg+'|'+Math.floor(elem.members/elem.siege)+'|'+elem.captured);
 	}
-	console.log("[/table]");
+	console.log('[/table]');
 }
 
 function printPlayers(data, l) {
-	console.log("[table]");
-	console.log("Игрок||Посещено осад||Убийств||Смертей||K/D||Время в захвате||Урон по флагу");
+	console.log('[table]');
+	console.log('Игрок||Посещено осад||Убийств||Смертей||K/D||Время в захвате||Урон по флагу');
 	for (let i = 0; i < l; i++){
 		let elem = data[i]; 
-		let kda = (elem.deaths > 0) ? (elem.kills/elem.deaths).toFixed(2) : elem.kills+".00";
-		console.log("[user="+elem.id+"][/user]|"+elem.siege+"|"+elem.kills+"|"+elem.deaths+"|"+kda+"|"+elem.capture_time+"|"+elem.flag_dmg);
+		let kda = (elem.deaths > 0) ? (elem.kills/elem.deaths).toFixed(2) : elem.kills+'.00';
+		console.log('[user='+elem.id+'][/user]|'+elem.siege+'|'+elem.kills+'|'+elem.deaths+'|'+kda+'|'+elem.capture_time+'|'+elem.flag_dmg);
 	}
-	console.log("[/table]");
+	console.log('[/table]');
 }
