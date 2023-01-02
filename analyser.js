@@ -30,100 +30,171 @@ function app() {
 				if (local_player.clan == -1) local_player.clan = parseInt(local_event.clan, 10);
 				if (local_event.type === KILL) {
 					local_player.kills++;
-					findPlayerByID(parseInt(local_event.data, 10),local_battlelog.players_list).deaths++;
+					findPlayerByID(parseInt(local_event.data, 10), local_battlelog.players_list).deaths++;
 				}
-				if (local_event.type === FLAG_DMG) local_player.flag_dmg+=parseInt(local_event.data, 10);
-				if (local_event.type === CAPTURE_STOP) local_player.capture_time+=parseInt(local_event.data, 10);
+				if (local_event.type === FLAG_DMG) local_player.flag_dmg += parseInt(local_event.data, 10);
+				if (local_event.type === CAPTURE_STOP) local_player.capture_time += parseInt(local_event.data, 10);
 				if (local_event.text.includes('Попытка захвата: отмена, ')) {
-					let data = local_event.text.substr(local_event.text.lastIndexOf(' ')+1);
+					let data = local_event.text.substr(local_event.text.lastIndexOf(' ') + 1);
 					data = data.substr(0, data.length - 1);
-					local_player.capture_time+=parseInt(local_event.data, 10);
+					local_player.capture_time += parseInt(local_event.data, 10);
 				}
-				if (local_event.type === CAPTURED){
-					local_player.capture_time+=60;
+				if (local_event.type === CAPTURED) {
+					local_player.capture_time += 60;
 					local_clan.captured++;
 				}
 			}
 			else {
-				if (local_event.type === CAPTURED){
+				if (local_event.type === CAPTURED) {
 					findClanByID(parseInt(local_event.clan, 10), local_battlelog.clans_list).captured++;
 				}
-			}			
+			}
 		}
 		for (let local_clan of local_battlelog.clans_list) {
 			for (let local_player of local_battlelog.players_list) {
 				if (local_player.clan === local_clan.id) {
 					local_clan.members++;
-					local_clan.kills 		+= local_player.kills;
-					local_clan.deaths 		+= local_player.deaths;
-					local_clan.flag_dmg 	+= local_player.flag_dmg;
+					local_clan.kills += local_player.kills;
+					local_clan.deaths += local_player.deaths;
+					local_clan.flag_dmg += local_player.flag_dmg;
 					local_clan.capture_time += local_player.capture_time;
 					local_clan.players.push(local_player);
-				}				
-			}			
+				}
+			}
 		}
 		for (let local_clan of local_battlelog.clans_list) {
 			local_all_clan = findAllClan(local_clan, all_clans_list);
 			local_all_clan.siege++;
-			local_all_clan.members 			+= local_clan.members;
-			local_all_clan.kills 			+= local_clan.kills;
-			local_all_clan.deaths 			+= local_clan.deaths;
-			local_all_clan.flag_dmg 		+= local_clan.flag_dmg;
-			local_all_clan.capture_time 	+= local_clan.capture_time;
-			local_all_clan.captured 		+= local_clan.captured;
+			local_all_clan.members += local_clan.members;
+			local_all_clan.kills += local_clan.kills;
+			local_all_clan.deaths += local_clan.deaths;
+			local_all_clan.flag_dmg += local_clan.flag_dmg;
+			local_all_clan.capture_time += local_clan.capture_time;
+			local_all_clan.captured += local_clan.captured;
 			for (let local_player of local_clan.players) {
 				let p = findPlayerByID(local_player.id, local_all_clan.players)
-				p.kills 		+= local_player.kills;
-				p.deaths 		+= local_player.deaths;
-				p.flag_dmg 		+= local_player.flag_dmg;
-				p.capture_time 	+= local_player.capture_time;
+				p.kills += local_player.kills;
+				p.deaths += local_player.deaths;
+				p.flag_dmg += local_player.flag_dmg;
+				p.capture_time += local_player.capture_time;
 			}
 		}
 		for (let local_player of local_battlelog.players_list) {
 			local_all_player = findAllPlayer(local_player, all_players_list);
 			local_all_player.siege++;
-			local_all_player.kills 			+= local_player.kills;
-			local_all_player.deaths 		+= local_player.deaths;
-			local_all_player.flag_dmg 		+= local_player.flag_dmg;
-			local_all_player.capture_time 	+= local_player.capture_time;
+			local_all_player.kills += local_player.kills;
+			local_all_player.deaths += local_player.deaths;
+			local_all_player.flag_dmg += local_player.flag_dmg;
+			local_all_player.capture_time += local_player.capture_time;
 		}
 	}
-	for(let clan of all_clans_list) {
-		pvp+=clan.kills;
-		capture_time+=clan.capture_time;
+	// {
+	// 	let c = 0;
+	// 	for (let b of battlelog_list) {
+	// 		c += b.players_list.length;
+	// 	}
+	// 	console.log(c);
+	// }
+	for (let clan of all_clans_list) {
+		pvp += clan.kills;
+		capture_time += clan.capture_time;
 	}
-	console.log('Осад: '			+battlelog_list.length);
-	console.log('Игроков: '			+all_players_list.length);
-	console.log('Кланов: '			+all_clans_list.length);
-	console.log('PVP: '				+pvp);
-	console.log('Время захвата: '	+capture_time);
-	
-	all_players_list.sort(Siege);
-	printPlayers(all_players_list, 100);
-	
-	all_clans_list.sort(Captured);	
-	printClans(all_clans_list, all_clans_list.length);
+	console.log('Осад: ' + battlelog_list.length);
+	console.log('Игроков: ' + all_players_list.length);
+	console.log('Кланов: ' + all_clans_list.length);
+	console.log('PVP: ' + pvp);
+	console.log('Время захвата: ' + capture_time);
+
+	console.log('[spoiler=По ладдеру]');
+	all_players_list.sort(Ladder);
+	printPlayers(all_players_list, all_players_list.length);
+	console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По убийствам]');
+	// all_players_list.sort(Kills);
+	// printPlayers(all_players_list, 100);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По смертям]');
+	// all_players_list.sort(Deaths);
+	// printPlayers(all_players_list, 100);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=K/D]');
+	// all_players_list.sort(KDA);
+	// printPlayers(all_players_list, 100);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По времени в захвате]');
+	// all_players_list.sort(Capture);
+	// printPlayers(all_players_list, 100);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По урону по флагу]');
+	// all_players_list.sort(Flags);
+	// printPlayers(all_players_list, 100);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По кол-ву осад]');
+	// all_clans_list.sort(Siege);	
+	// printClans(all_clans_list, all_clans_list.length);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По убийствам]');
+	// all_clans_list.sort(Kills);	
+	// printClans(all_clans_list, all_clans_list.length);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По смертям]');
+	// all_clans_list.sort(Deaths);	
+	// printClans(all_clans_list, all_clans_list.length);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=K/D]\n');
+	// all_clans_list.sort(KDA);	
+	// printClans(all_clans_list, all_clans_list.length);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По времени в захвате]');
+	// all_clans_list.sort(Capture);	
+	// printClans(all_clans_list, all_clans_list.length);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По урону по флагу]');
+	// all_clans_list.sort(Flags);	
+	// printClans(all_clans_list, all_clans_list.length);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По среднему кол-ву людей]');
+	// all_clans_list.sort(AverageMembers);	
+	// printClans(all_clans_list, all_clans_list.length);
+	// console.log('[/spoiler]\n');
+
+	// console.log('[spoiler=По кол-ву захватов/удержаний]');
+	// all_clans_list.sort(Captured);	
+	// printClans(all_clans_list, all_clans_list.length);
+	// console.log('[/spoiler]\n');
 };
 
-function getFiles(dir, files_){
+function getFiles(dir, files_) {
 	files_ = files_ || [];
-    var files = fs.readdirSync(dir);
-    for (var i in files){
-        var name = dir + '/' + files[i];
-        if (fs.statSync(name).isDirectory()){
-            getFiles(name, files_);
-        } else {
-            files_.push(name);
-        }
-    }
-    return files_;
+	var files = fs.readdirSync(dir);
+	for (var i in files) {
+		var name = dir + '/' + files[i];
+		if (fs.statSync(name).isDirectory()) {
+			getFiles(name, files_);
+		} else {
+			files_.push(name);
+		}
+	}
+	return files_;
 };
 
-function findPlayerByID(local_id, local_players_list){
+function findPlayerByID(local_id, local_players_list) {
 	for (let player of local_players_list) {
 		if (player.id == local_id) {
 			return player;
-		}			
+		}
 	}
 	local_players_list.push({
 		id: local_id,
@@ -133,14 +204,14 @@ function findPlayerByID(local_id, local_players_list){
 		capture_time: 0,
 		clan: -1
 	});
-	return (local_players_list[local_players_list.length-1]);
+	return (local_players_list[local_players_list.length - 1]);
 };
 
-function findClanByID(local_id, local_clans_list){
+function findClanByID(local_id, local_clans_list) {
 	for (let clan of local_clans_list) {
 		if (clan.id == local_id) {
 			return clan;
-		}			
+		}
 	}
 	local_clans_list.push({
 		id: local_id,
@@ -152,7 +223,7 @@ function findClanByID(local_id, local_clans_list){
 		captured: 0,
 		players: []
 	});
-	return (local_clans_list[local_clans_list.length-1]);	
+	return (local_clans_list[local_clans_list.length - 1]);
 }
 
 function findAllPlayer(local_player, local_all_players_list) {
@@ -170,7 +241,7 @@ function findAllPlayer(local_player, local_all_players_list) {
 		capture_time: 0,
 		clan: local_player.clan
 	});
-	return (local_all_players_list[local_all_players_list.length-1]);
+	return (local_all_players_list[local_all_players_list.length - 1]);
 }
 
 function findAllClan(local_clan, local_all_clans_list) {
@@ -190,13 +261,13 @@ function findAllClan(local_clan, local_all_clans_list) {
 		captured: 0,
 		players: []
 	});
-	return (local_all_clans_list[local_all_clans_list.length-1]);
+	return (local_all_clans_list[local_all_clans_list.length - 1]);
 }
 
 function Kills(a, b) {
-  if (a.kills > b.kills) return -1;
-  if (b.kills > a.kills) return 1;
-  return 0;
+	if (a.kills > b.kills) return -1;
+	if (b.kills > a.kills) return 1;
+	return 0;
 }
 
 function Deaths(a, b) {
@@ -206,61 +277,71 @@ function Deaths(a, b) {
 }
 
 function KDA(a, b) {
-	let kda_a = (a.deaths === 0) ? a.kills : a.kills/a.deaths;
-	let kda_b = (b.deaths === 0) ? b.kills : kda_b = b.kills/b.deaths;
+	let kda_a = (a.deaths === 0) ? a.kills : a.kills / a.deaths;
+	let kda_b = (b.deaths === 0) ? b.kills : b.kills / b.deaths;
 	if (kda_a > kda_b) return -1;
 	if (kda_b > kda_a) return 1;
 	return 0;
 }
 
 function Flags(a, b) {
-	if (a.flag_dmg > b.flag_dmg ) return -1;
-	if (b.flag_dmg  > a.flag_dmg ) return 1;
+	if (a.flag_dmg > b.flag_dmg) return -1;
+	if (b.flag_dmg > a.flag_dmg) return 1;
 	return 0;
 }
 
 function Siege(a, b) {
-	if (a.siege > b.siege ) return -1;
-	if (b.siege  > a.siege ) return 1;
+	if (a.siege > b.siege) return -1;
+	if (b.siege > a.siege) return 1;
 	return 0;
 }
 
 function Capture(a, b) {
-	if (a.capture_time > b.capture_time ) return -1;
-	if (b.capture_time  > a.capture_time ) return 1;
+	if (a.capture_time > b.capture_time) return -1;
+	if (b.capture_time > a.capture_time) return 1;
 	return 0;
 }
 
 function Captured(a, b) {
-	if (a.captured > b.captured ) return -1;
-	if (b.captured  > a.captured ) return 1;
+	if (a.captured > b.captured) return -1;
+	if (b.captured > a.captured) return 1;
 	return 0;
 }
 
 function AverageMembers(a, b) {
-	if (a.members/a.siege > b.members/b.siege) return -1;
-	if (b.members/b.siege  > a.members/a.siege) return 1;
+	if (a.members / a.siege > b.members / b.siege) return -1;
+	if (b.members / b.siege > a.members / a.siege) return 1;
 	return 0;
+}
+
+function Ladder(a, b) {
+	return calcLadder(b) - calcLadder(a);
 }
 
 function printClans(data, l) {
 	console.log('[table]');
 	console.log('Клан||Посещено осад||Убийств||Смертей||K/D||Время в захвате||Урон по флагу||Среднее кол-во людей||Захватов/удержаний');
-	for (let i = 0; i < l; i++){
+	for (let i = 0; i < l; i++) {
 		let elem = data[i];
-		let kda = (elem.deaths > 0) ? (elem.kills/elem.deaths).toFixed(2) : elem.kills+'.00';
-		console.log('[clan='+elem.id+']|'+elem.siege+'|'+elem.kills+'|'+elem.deaths+'|'+kda+'|'+elem.capture_time+'|'+elem.flag_dmg+'|'+Math.floor(elem.members/elem.siege)+'|'+elem.captured);
+		let kda = (elem.deaths > 0) ? (elem.kills / elem.deaths).toFixed(2) : elem.kills + '.00';
+		console.log('[clan=' + elem.id + ']|' + elem.siege + '|' + elem.kills + '|' + elem.deaths + '|' + kda + '|' + elem.capture_time + '|' + elem.flag_dmg + '|' + Math.floor(elem.members / elem.siege) + '|' + elem.captured);
 	}
 	console.log('[/table]');
 }
 
 function printPlayers(data, l) {
 	console.log('[table]');
-	console.log('Игрок||Посещено осад||Убийств||Смертей||K/D||Время в захвате||Урон по флагу');
-	for (let i = 0; i < l; i++){
-		let elem = data[i]; 
-		let kda = (elem.deaths > 0) ? (elem.kills/elem.deaths).toFixed(2) : elem.kills+'.00';
-		console.log('[user='+elem.id+'][/user]|'+elem.siege+'|'+elem.kills+'|'+elem.deaths+'|'+kda+'|'+elem.capture_time+'|'+elem.flag_dmg);
+	console.log('Игрок||Посещено осад||Убийств||Смертей||K/D||Время в захвате||Урон по флагу||Рейтинг');
+	for (let i = 0; i < l; i++) {
+		let elem = data[i];
+		let kda = (elem.deaths > 0) ? (elem.kills / elem.deaths).toFixed(2) : elem.kills + '.00';
+		console.log('[user=' + elem.id + '][/user]|' + elem.siege + '|' + elem.kills + '|' + elem.deaths + '|' + kda + '|' + elem.capture_time + '|' + elem.flag_dmg + '|' + calcLadder(elem));
 	}
 	console.log('[/table]');
+}
+
+function calcLadder(elem) {
+	if (elem.siege < 5) return -1;
+	let kda = (elem.deaths > 0) ? (elem.kills / elem.deaths) : elem.kills;
+	return Math.ceil(100 * (((elem.kills / elem.siege) * Math.pow(0.5 + kda, 1 / 4)) + (elem.flag_dmg / elem.siege / 9000) * 50 * 1.5 + ((elem.capture_time / 60) / (774 / 60) / elem.siege) * 200 * 0.7 + elem.siege / 105 * 10 * 0.5));
 }
